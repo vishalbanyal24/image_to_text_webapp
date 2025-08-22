@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to Text Generator</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="math-background" id="math-background"></div>
+    
+    <div class="container">
+        <h1>Image to Text Generator</h1>
+
+        <div class="mode-tabs" role="tablist">
+            <button type="button" class="tab active" data-mode="upload">Upload</button>
+            <button type="button" class="tab" data-mode="url">URL</button>
+            <button type="button" class="tab" data-mode="local">Local Path</button>
+        </div>
+
+        <form id="convert-form" action="{% url 'convert_image_to_text' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="input-mode" data-mode="upload">
+                <label class="label">Upload or Drag & Drop</label>
+                <div id="dropzone" class="dropzone">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 16V4m0 0l-4 4m4-4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20 16.5a3.5 3.5 0 01-3.5 3.5H7A5 5 0 017 9a6 6 0 0111.31 2.28A3.5 3.5 0 0120 16.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="dz-text">
+                        <strong>Drop image here</strong> or click to browse
+                        <div class="dz-sub">PNG, JPG up to ~10MB</div>
+                    </div>
+                    <input type="file" id="image_file" name="image_file" accept="image/*" hidden>
+                </div>
+                <div id="preview" class="preview hidden">
+                    <img id="preview-img" alt="Image preview"/>
+                    <button type="button" id="clear-file" class="btn-secondary">Remove</button>
+                </div>
+            </div>
+
+            <div class="input-mode hidden" data-mode="url">
+                <div class="form-group">
+                    <label for="image_url">Image URL</label>
+                    <input type="text" id="image_url" name="image_url" placeholder="https://example.com/image.jpg" disabled>
+                </div>
+            </div>
+
+            <div class="input-mode hidden" data-mode="local">
+                <div class="form-group">
+                    <label for="image_local_path">Local Image Path</label>
+                    <input type="text" id="image_local_path" name="image_local_path" placeholder="C:/Users/Public/image.png" disabled>
+                </div>
+            </div>
+
+            <button id="submit-btn" type="submit">
+                <span id="btn-text">Generate Description</span>
+            </button>
+        </form>
+
+        <div class="chat">
+            {% if input_image_url %}
+                <div class="message user">
+                    <div class="avatar">U</div>
+                    <div class="bubble">
+                        <div class="bubble-header">You</div>
+                        <div class="bubble-body">
+                            <div>URL: <a href="{{ input_image_url }}" target="_blank" rel="noopener">{{ input_image_url }}</a></div>
+                            <img class="bubble-image" src="{{ input_image_url }}" alt="Submitted image" onerror="this.style.display='none'" />
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if input_image_local_path %}
+                <div class="message user">
+                    <div class="avatar">U</div>
+                    <div class="bubble">
+                        <div class="bubble-header">You</div>
+                        <div class="bubble-body">Local Path: {{ input_image_local_path }}</div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if description %}
+                <div class="message assistant">
+                    <div class="avatar">A</div>
+                    <div class="bubble">
+                        <div class="bubble-header">Assistant</div>
+                        <div id="description-text" class="bubble-body">{{ description }}</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if error_message %}
+            <div class="error">
+                <p>{{ error_message }}</p>
+                <p><small>Debug: Check if GOOGLE_API_KEY is set in your environment variables.</small></p>
+                <p><small>Test API: <a href="{% url 'test_api' %}" target="_blank">Click here to test API connection</a></small></p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-card">
+            <div class="loader-ring"></div>
+            <div class="loading-text">
+                <span>Generating description</span>
+                <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
