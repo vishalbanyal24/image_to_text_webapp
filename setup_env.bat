@@ -7,7 +7,7 @@ set /p GOOGLE_API_KEY="API Key: "
 
 echo.
 echo Setting environment variables...
-set GOOGLE_API_KEY=%GOOGLE_API_KEY%
+set GOOGLE_API_KEY=%AIzaSyD7Jb7ePYDGYAFm2vVbC6o8t3ylNlhhWX4%
 
 echo.
 echo Environment variables set successfully!
@@ -20,3 +20,4 @@ echo Note: These environment variables are only set for this session.
 echo To make them permanent, add them to your system environment variables.
 echo.
 pause
+
