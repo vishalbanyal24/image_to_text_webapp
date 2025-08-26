@@ -11,7 +11,11 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
 from urllib.parse import urlparse
 import re
+from .genai_client import generate_text
 
+def my_view(request):
+    text = generate_text("Describe this image...")
+    return HttpResponse(text)
 
 def get_llm():
     """Get LLM instance with current API key"""
