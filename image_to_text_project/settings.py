@@ -14,8 +14,14 @@ from pathlib import Path
 import os
 import google.generativeai as genai
 
-genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEY is not set. Please configure it in environment variables.")
+
+genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel("gemini-1.5-flash")
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
