@@ -14,16 +14,30 @@ from pathlib import Path
 import os
 import google.generativeai as genai
 
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
-if not GOOGLE_API_KEY:
-    raise ValueError("GOOGLE_API_KEY is not set. Please configure it in environment variables.")
-
-genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
+from django.core.exceptions import ImproperlyConfigured
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+def get_env_var(name: str) -> str:
+    """Fetch required env var or crash loudly."""
+    value = os.getenv(name)
+    if not value:
+        raise ImproperlyConfigured(
+            f"⚠️ Missing required environment variable: {name}\n"
+            f"Go set it in Railway → Variables tab."
+        )
+    return value
+
+# 🚨 Fail early if key is not set
+GOOGLE_API_KEY = get_env_var("GOOGLE_API_KEY")
+
+# Configure Gemini client (safe to do at settings level)
+genai.configure(api_key=GOOGLE_API_KEY)
+
+# ❌ DON'T instantiate a model here — do it inside your app code
+# Example usage in a view or service:
+# model = genai.GenerativeModel("gemini-1.5-flash")
 
 
 # Quick-start development settings - unsuitable for production
