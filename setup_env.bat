@@ -4,6 +4,7 @@ echo.
 
 echo Please enter your Google API Key:
 set /p GOOGLE_API_KEY="API Key: "
+echo $GOOGLE_API_KEY
 
 echo.
 echo Setting environment variable GOOGLE_API_KEY...
@@ -23,6 +24,7 @@ echo Note: Using 'setx' makes the variable permanent for future sessions.
 echo You may need to open a new terminal for it to take effect.
 echo.
 pause
+
 
 
 
