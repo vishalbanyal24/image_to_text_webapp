@@ -19,15 +19,11 @@ from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-import os
-import google.generativeai as genai
-
 # Read from environment
 api_key = os.getenv("GOOGLE_API_KEY")
 
 if not api_key:
     raise ValueError("❌ GOOGLE_API_KEY is missing. Did you set it in Railway Variables?")
-
 # Configure Gemini
 genai.configure(api_key=api_key)
 
@@ -43,11 +39,11 @@ genai.configure(api_key=api_key)
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-gdfzw_281r@kktvahhx22^#_&6k@q78nrbyz9&ktlez3o^0q$v')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    os.environ.get("RAILWAY_STATIC_URL", "imagetotextwebapp-production.up.railway.app"),
+    os.environ.get("RAILWAY_STATIC_URL", ""),".railway.app",
 ]
 
 
