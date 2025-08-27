@@ -19,21 +19,17 @@ from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-def get_env_var(name: str) -> str:
-    """Fetch required env var or crash loudly."""
-    value = os.getenv(name)
-    if not value:
-        raise ImproperlyConfigured(
-            f"⚠️ Missing required environment variable: {name}\n"
-            f"Go set it in Railway → Variables tab."
-        )
-    return value
+import os
+import google.generativeai as genai
 
-# 🚨 Fail early if key is not set
-GOOGLE_API_KEY = get_env_var("GOOGLE_API_KEY")
+# Read from environment
+api_key = os.getenv("GOOGLE_API_KEY")
 
-# Configure Gemini client (safe to do at settings level)
-genai.configure(api_key=GOOGLE_API_KEY)
+if not api_key:
+    raise ValueError("❌ GOOGLE_API_KEY is missing. Did you set it in Railway Variables?")
+
+# Configure Gemini
+genai.configure(api_key=api_key)
 
 # ❌ DON'T instantiate a model here — do it inside your app code
 # Example usage in a view or service:
